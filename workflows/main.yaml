@@ -1,0 +1,28 @@
+name: Despliegue con Surge.sh
+
+on:
+  push:
+    branches:
+      - main # El despliegue se activará en cada push a la rama 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # Ejecutar en un entorno Linux
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4 # Obtener el código del repositorio
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18' # Puedes especificar la versión de Node.js que prefieras
+
+    - name: Instalar Surge CLI
+      run: npm install -g surge # Instalar Surge CLI globalmente
+
+    - name: Desplegar en Surge.sh
+      run: surge --project ./ --domain ${{ secrets.SURGE_DOMAIN }}
+      env:
+        SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+        SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
